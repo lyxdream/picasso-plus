@@ -6,10 +6,16 @@
   "scripts": {
     "dev": "pnpm -C play dev"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^4.6.4",
     "vue": "^3.2.33"
+  },
+  "dependencies": {
+    "@picasso-plus/components": "workspace:^1.0.0",
+    "@picasso-plus/theme-chalk": "workspace:^1.0.0",
+    "@picasso-plus/utils": "workspace:^1.0.0"
   }
 }
