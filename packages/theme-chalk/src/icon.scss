@@ -1,0 +1,45 @@
+// @use 多次引入只会打包一次
+@use "./mixins/mixins.scss" as *;
+
+@font-face {
+  font-family: "p-ui-icons"; /* Project id 3351333 */
+  src: url("./fonts/iconfont.woff") format("woff"),
+    url("./fonts/iconfont.ttf") format("truetype");
+}
+
+[class^="#{$namespace}-icon-"],
+[class*="#{$namespace}-icon-"] {
+  font-family: "p-ui-icons" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.#{$namespace}-icon-arrow-right:before {
+  content: "\e600";
+}
+
+.#{$namespace}-icon-arrow-left:before {
+  content: "\e623";
+}
+
+.#{$namespace}-icon-loading:before {
+  content: "\e756";
+}
+
+.#{$namespace}-icon-close:before {
+  content: "\e661";
+}
+
+@keyframes rotate {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.#{$namespace}-icon-loading {
+  animation: rotate 1.5s linear infinite;
+}
