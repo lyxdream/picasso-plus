@@ -19,9 +19,9 @@ function copyfont() {
     .pipe(dest("./dist/fonts"));
 } // 拷贝字体样式
 
-function copyStyle() {
+function copyFullStyle() {
   return src(path.resolve(__dirname, "./dist/**")).pipe(
     dest(path.resolve(__dirname, "../../dist/theme-chalk"))
   );
 }
-export default series(complie, copyfont, copyStyle);
+export default series(complie, copyfont, copyFullStyle);
