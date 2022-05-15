@@ -184,7 +184,9 @@ pnpm install sass -w
 
 ## 5.打包组件库
 
-1、打包样式 2、打包所有组件库 3、打包每个组件 4、生成一个组件库 5、发布组件
+1、打包样式 2、打包所有组件 3、打包每个组件 4、生成一个组件库 5、发布组件
+
+### 打包样式
 
 ```
 gulp
@@ -201,9 +203,26 @@ pnpm add  @types/sass --filter @picasso-plus/theme-chalk
 pnpm add gulp-sass @types/gulp-sass @types/sass @types/gulp-autoprefixer gulp-autoprefixer @types/gulp-clean-css gulp-clean-css  -D --filter @picasso-plus/theme-chalk
 ```
 
-"inherit":通过相应的标准输入输出流传入/传出父进程
+### 打包所有组件
+
+```
+
+pnpm install rollup @rollup/plugin-node-resolve @rollup/plugin-commonjs rollup-plugin-typescript2 rollup-plugin-vue -D -w
+
+rollup
+@rollup/plugin-node-resolve  解析第三方模块
+@rollup/plugin-commonjs
+rollup-plugin-typescript2   //编译ts
+rollup-plugin-vue   //.vue文件
+ -w 安装到跟目录下
+```
+
+
+
 
 扩展：
+
+"inherit":通过相应的标准输入输出流传入/传出父进程
 
 - sucrase
 
@@ -236,4 +255,4 @@ options <Object>
 完全不考虑并发性和拓扑排序，在所有匹配的包中立即运行给定的脚本，并带有前缀流式输出。对于长时间运行的流程，这是优于许多包的首选标志，例如，长时间的构建流程。
 ```
 
-- moduleResolution的两种配置，node会先到node_modules目录去查找，classic会优先到外层去查找，找不到才会去node_modules目录去查找
+- moduleResolution 的两种配置，node 会先到 node_modules 目录去查找，classic 会优先到外层去查找，找不到才会去 node_modules 目录去查找

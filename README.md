@@ -25,4 +25,10 @@ theme-chalk
 最终发布的模块就是dist模块 -》 element-plus -》 z-plus
 
 
-z-plus就是我们组件库的整合入口 
+z-plus就是我们组件库的整合入口 \
+
+
+- gulp适合流程控制和代码的转义
+
+
+
