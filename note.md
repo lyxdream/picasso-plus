@@ -235,3 +235,5 @@ options <Object>
 ```
 完全不考虑并发性和拓扑排序，在所有匹配的包中立即运行给定的脚本，并带有前缀流式输出。对于长时间运行的流程，这是优于许多包的首选标志，例如，长时间的构建流程。
 ```
+
+- moduleResolution的两种配置，node会先到node_modules目录去查找，classic会优先到外层去查找，找不到才会去node_modules目录去查找
