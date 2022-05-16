@@ -8,17 +8,20 @@ import { outDir, pRoot } from "./utils/paths";
 import { parallel } from "gulp";
 
 const buildFull = async () => {
+  // rollup打包的配置信息
   const config = {
     input: path.resolve(pRoot, "index.ts"), //// 打包的入口
     plugins: [nodeResolve(), typescript(), vue(), commonjs()],
-    external: (id) => /^vue/.test(id),
+    external: (id) => /^vue/.test(id), // 表示打包的时候不打包vue代码
   };
+  // 整个组件库 两种使用方式 import 导入组件库 在浏览器中使用 script
+  // esm umd
   const buildConfig = [
     {
-      format: "umd",
+      format: "umd", // 打包的格式
       file: path.resolve(outDir, "index.js"),
-      name: "PPlus",
-      exports: "named",
+      name: "PPlus", // 全局的名字
+      exports: "named", // 导出的名字 用命名的方式导出  liraryTarget:"var" name:""
       globals: {
         // 表示使用的vue是全局的
         vue: "Vue",

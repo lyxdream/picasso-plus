@@ -8,12 +8,14 @@ import { withTaskName, run } from "./utils";
 // pnpm run -C packages/theme-chalk build
 export default series(
   withTaskName("clean", () => run("rm -rf ./dist")),
-  withTaskName("buildPackages", () =>
-    run("pnpm run --filter ./packages/** --parallel build")
-  ),
-  // 执行build命令时会调用rollup, 我们给rollup传递参数buildFullComponent 那么就会执行导出任务叫 buildFullComponent
-  withTaskName("buildFullComponent", () =>
-    run("pnpm run build buildFullComponent")
+  parallel(
+    withTaskName("buildPackages", () =>
+      run("pnpm run --filter ./packages/** --parallel build")
+    ),
+    // 执行build命令时会调用rollup, 我们给rollup传递参数buildFullComponent 那么就会执行导出任务叫 buildFullComponent
+    withTaskName("buildFullComponent", () =>
+      run("pnpm run build buildFullComponent")
+    )
   )
 );
 
