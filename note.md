@@ -217,7 +217,14 @@ rollup-plugin-vue   //.vue文件
  -w 安装到跟目录下
 ```
 
+对打包之后的路径做处理
+```
+import { withInstall } from '@picasso-plus/utils/install';
 
+改为：
+
+import { withInstall } from  'picasso-plus/es/utils/install'
+```
 
 
 扩展：
