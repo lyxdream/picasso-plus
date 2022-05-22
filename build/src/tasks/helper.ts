@@ -1,11 +1,11 @@
 //专门打包util 命令 hook
 
 import { dest, parallel, series, src } from "gulp";
-import { buildConfig } from "./utils/config";
+import { buildConfig } from "../utils/config";
 import ts from "gulp-typescript";
-import { projectRoot, outDir } from "./utils/paths";
+import { projectRoot, buildOutput } from "../utils/paths";
 import path from "path";
-import { withTaskName } from "./utils";
+import { withTaskName } from "../utils";
 
 //打包  模块化规范cjs es模块  umd浏览器
 export const buildPackages = (pkgPath: string, packageName: string) => {
@@ -31,7 +31,7 @@ export const buildPackages = (pkgPath: string, packageName: string) => {
         // 放到es-> utils 和 lib -> utils
         // 将utils 模块拷贝到dist 目录下的es目录和lib目录
         return src(`${output}/**`).pipe(
-          dest(path.resolve(outDir, config.output.name, packageName)))
+          dest(path.resolve(buildOutput, config.output.name, packageName)))
       })
      ) 
   });

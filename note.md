@@ -206,7 +206,6 @@ pnpm add gulp-sass @types/gulp-sass @types/sass @types/gulp-autoprefixer gulp-au
 ### 打包所有组件
 
 ```
-
 pnpm install rollup @rollup/plugin-node-resolve @rollup/plugin-commonjs rollup-plugin-typescript2 rollup-plugin-vue -D -w
 
 rollup
@@ -225,6 +224,22 @@ import { withInstall } from '@picasso-plus/utils/install';
 
 import { withInstall } from  'picasso-plus/es/utils/install'
 ```
+
+### 给每个组件添加类型声明文件
+
+```
+pnpm i ts-morph -w -D
+```
+
+ts-morph 文档地址：https://ts-morph.com/
+
+
+
+
+
+
+
+
 
 
 扩展：
