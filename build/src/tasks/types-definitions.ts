@@ -1,14 +1,21 @@
-
 import glob from "fast-glob";
-import { compRoot, buildOutput, projectRoot } from "../utils/paths";
+import { compRoot, buildOutput, projectRoot, pkgRoot } from "../utils/paths";
 import path from "path";
-import { pathRewriter } from "../utils/index";
+import { pathRewriter, withTaskName } from "../utils/index";
 import { Project, SourceFile } from "ts-morph";
 import fs from "fs/promises";
 import * as VueCompiler from "@vue/compiler-sfc";
+import consola from "consola";
+import chalk from "chalk";
+import { parallel, series, TaskFunction } from "gulp";
+import { copy } from "fs-extra";
+import { buildConfig } from "./../utils";
 
 const TSCONFIG_PATH = path.resolve(projectRoot, "tsconfig.json");
+export const modules = ["esm", "cjs"] as const;
+export type Module = typeof modules[number];
 
+//生成声明文件到dist/types
 export const generateTypesDefinitions = async () => {
   // 生成.d.ts 我们需要有一个tsconfig
   const project = new Project({
@@ -41,10 +48,20 @@ export const generateTypesDefinitions = async () => {
       if (file.endsWith(".vue")) {
         const content = await fs.readFile(file, "utf8");
         const sfc = VueCompiler.parse(content);
-        const { script } = sfc.descriptor;
-        if (script) {
-          const content = script.content; // 拿到脚本  icon.vue.ts  => icon.vue.d.ts
-          const sourceFile = project.createSourceFile(file + ".ts", content);
+        const { script, scriptSetup } = sfc.descriptor;
+        if (script || scriptSetup) {
+          let content = script?.content ?? ""; // 拿到脚本  icon.vue.ts  => icon.vue.d.ts
+          if (scriptSetup) {
+            const compiled = VueCompiler.compileScript(sfc.descriptor, {
+              id: "xxx",
+            });
+            content += compiled.content;
+          }
+          const lang = scriptSetup?.lang || script?.lang || "js";
+          const sourceFile = project.createSourceFile(
+            `${file}.${lang}`,
+            content
+          );
           sourceFiles.push(sourceFile);
         }
       } else if (file.endsWith(".ts")) {
@@ -59,17 +76,60 @@ export const generateTypesDefinitions = async () => {
     emitOnlyDtsFiles: true,
   });
   const tasks = sourceFiles.map(async (sourceFile: any) => {
+    // components/icon/src/icon.vue.ts ===relativePath
+    const relativePath = path.relative(pkgRoot, sourceFile.getFilePath());
+    consola.trace(
+      chalk.yellow(
+        `Generating definition for file: ${chalk.bold(relativePath)}`
+      )
+    );
+
     const emitOutput = sourceFile.getEmitOutput();
-    const task = emitOutput.getOutputFiles().map(async (outPutFile) => {
-      const filePath = outPutFile.getFilePath();
-      console.log(filePath, "===filePath");
+    const emitFiles = emitOutput.getOutputFiles();
+    if (emitFiles.length === 0) {
+      throw new Error(`Emit no file: ${chalk.bold(relativePath)}`);
+    }
+
+    const tasks = emitFiles.map(async (outPutFile) => {
+      const filePath = outPutFile.getFilePath(); //生成d.ts文件
       await fs.mkdir(path.dirname(filePath), {
         recursive: true, //递归
       });
       // @z-plus -> z-plus/es -> .d.ts 肯定不用去lib下查找
-      await fs.writeFile(filePath, pathRewriter("es")(outPutFile.getText()));
+      await fs.writeFile(
+        filePath,
+        pathRewriter("es")(outPutFile.getText()),
+        "utf8"
+      );
+
+      consola.success(
+        chalk.green(
+          `Definition for file: ${chalk.bold(relativePath)} generated`
+        )
+      );
     });
-    await Promise.all(task);
+    await Promise.all(tasks);
   });
   await Promise.all(tasks);
 };
+
+//拷贝声明文件到dist对应的模块
+export const copyTypesDefinitions: TaskFunction = (done) => {
+  const src = path.resolve(buildOutput, "types");
+  const copyTypes = (module: Module) =>
+    withTaskName(`copyTypes:${module}`, () =>
+      copy(src, buildConfig[module].output.path)
+    );
+  return parallel(copyTypes("esm"), copyTypes("cjs"))(done);
+};
+
+// // -r  循环拷贝
+// function copyTypes(){
+//   const src = path.resolve(outDir,'types/components/')
+//   const copy = (module)=>{
+//       let output = path.resolve(outDir,module,'components')
+//       return ()=>run(`cp -r ${src}/* ${output}`)
+//   }
+//   return parallel(copy('es'),copy('lib'))
+// }
+export const typesDefinition = series(generateTypesDefinitions,copyTypesDefinitions)

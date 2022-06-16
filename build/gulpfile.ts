@@ -9,7 +9,7 @@ import { withTaskName, run } from "./src/utils";
 // withTaskName("clean", () => run("rm -rf ./dist")),
 // withTaskName("buildPackages", () =>
 //       run("pnpm run --filter ./packages/** --parallel build")
-//     ),
+//    ),
 export default series(
   withTaskName("clean", () => run("pnpm run clean")),
   parallel(
@@ -20,17 +20,15 @@ export default series(
       run("pnpm run build buildFullComponent")
     ),
     //生成.d.ts文件
-    withTaskName("generateTypesDefinitions", () =>
-      run("pnpm run build generateTypesDefinitions")
+    withTaskName("typesDefinition", () =>
+      run("pnpm run build typesDefinition")
     ),
-    //打包css文件
+    //打包css文件 和工具文件
     series(
       withTaskName("buildThemeChalk", () =>
         run("pnpm run -C packages/theme-chalk build")
       ),
-      withTaskName("buildUtils", () =>
-        run("pnpm run -C packages/utils build")
-      )
+      withTaskName("buildUtils", () => run("pnpm run -C packages/utils build"))
     )
     // withTaskName("buildPackages", () =>
     //   run("pnpm run --filter ./packages/** --parallel build")
@@ -39,6 +37,3 @@ export default series(
 );
 
 export * from "./src/tasks/index";
-
-// export * from "./src/tasks/full-bundle";
-// export * from "./src/tasks/component-bundle";

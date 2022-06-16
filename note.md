@@ -234,7 +234,16 @@ pnpm i ts-morph -w -D
 ts-morph 文档地址：https://ts-morph.com/
 
 
+```js
+const emitOutput = sourceFile.getEmitOutput();
+emitOutput.getEmitSkipped(); // returns: boolean
+for (const outputFile of emitOutput.getOutputFiles()) {
+  outputFile.getFilePath();
+  outputFile.getWriteByteOrderMark();
+  outputFile.getText();
+}
 
+```
 
 
 

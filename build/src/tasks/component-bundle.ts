@@ -11,6 +11,7 @@ import { OutputOptions, rollup } from "rollup";
 import { buildConfig } from "../utils/config";
 import { pathRewriter } from "../utils/index";
 
+//打包单个组件
 const buildEachComponent = async () => {
   //打包每个组件
   const files = sync("*", {
@@ -40,4 +41,22 @@ const buildEachComponent = async () => {
   return Promise.all(builds);
 };
 
-export const buildComponent = series(buildEachComponent);
+//生成入口文件
+async function buildComponentEntry() {
+  const config = {
+    input: path.resolve(compRoot, "index.ts"),
+    plugins: [typescript()],
+    external: () => true,
+  };
+  const bundle = await rollup(config);
+  return Promise.all(
+    Object.values(buildConfig)
+      .map((config) => ({
+        format: config.format,
+        file: path.resolve(config.output.path, "components/index.js"),
+      }))
+      .map((config) => bundle.write(config as OutputOptions))
+  );
+}
+
+export const buildComponent = series(buildEachComponent, buildComponentEntry);

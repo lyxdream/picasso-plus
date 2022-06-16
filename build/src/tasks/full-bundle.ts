@@ -6,7 +6,8 @@ import path from "path";
 import { rollup, OutputOptions } from "rollup";
 import { buildOutput, epRoot } from "../utils/paths";
 import { parallel } from "gulp";
-import { writeBundles } from "../utils";
+import { buildConfig, pathRewriter, writeBundles } from "../utils";
+import fs from "fs/promises";
 
 const buildFull = async () => {
   // rollup打包的配置信息
@@ -38,4 +39,34 @@ const buildFull = async () => {
   //   buildConfig.map((config) => bundle.write(config as OutputOptions))
   // );
 };
-export const buildFullComponent = parallel(buildFull);
+
+//打包入口文件  fs.readdir()方法用于异步读取给定目录的内容。此方法的回调返回目录中所有文件名的数组
+async function buildEntry() {
+  const entryFiles = await fs.readdir(epRoot, { withFileTypes: true });
+  console.log(entryFiles, "-entryFiles-entryFiles");
+
+  const entryPoints = entryFiles
+    .filter((f) => f.isFile())
+    .filter((f) => !["package.json"].includes(f.name))
+    .map((f) => path.resolve(epRoot, f.name));
+
+  console.log(entryPoints, "---entryPoints");
+
+  const config = {
+    input: entryPoints,
+    plugins: [nodeResolve(), vue(), typescript()],
+    external: (id: string) => /^vue/.test(id) || /^@picasso-plus/.test(id),
+  };
+  const bundle = await rollup(config);
+  return Promise.all(
+    Object.values(buildConfig)
+      .map((config) => ({
+        format: config.format,
+        dir: config.output.path,
+        paths: pathRewriter(config.output.name),
+      }))
+      .map((option) => bundle.write(option as OutputOptions))
+  );
+}
+
+export const buildFullComponent = parallel(buildFull, buildEntry);
