@@ -1,7 +1,13 @@
 import glob from "fast-glob";
-import { compRoot, buildOutput, projectRoot, pkgRoot } from "../utils/paths";
+import {
+  compRoot,
+  buildOutput,
+  projectRoot,
+  pkgRoot,
+  epRoot,
+} from "../utils/paths";
 import path from "path";
-import { pathRewriter, withTaskName } from "../utils/index";
+import { excludeFiles, pathRewriter, withTaskName } from "../utils/index";
 import { Project, SourceFile } from "ts-morph";
 import fs from "fs/promises";
 import * as VueCompiler from "@vue/compiler-sfc";
@@ -35,16 +41,34 @@ export const generateTypesDefinitions = async () => {
     tsConfigFilePath: TSCONFIG_PATH,
     skipAddingFilesFromTsConfig: true, //从tsconfig去添加
   });
-  const filePaths = await glob("**/*", {
-    // ** 任意目录  * 任意文件
-    cwd: compRoot,
-    onlyFiles: true,
-    absolute: true, //当前文件的任意目录
-  });
+
+  const globAnyFile = "**/*.{js?(x),ts?(x),vue}";
+  const filePaths = excludeFiles(
+    await glob([globAnyFile, "!picasso-plus/**/*"], {
+      // cwd: pkgRoot,
+      cwd: compRoot,
+      onlyFiles: true,
+      absolute: true, //当前文件的任意目录
+    })
+  );
+
+  const epPaths = excludeFiles(
+    await glob([globAnyFile], {
+      cwd: epRoot,
+      onlyFiles: true,
+    })
+  );
+
+  // const filePaths = await glob("**/*", {
+  //   // ** 任意目录  * 任意文件
+  //   cwd: compRoot,
+  //   onlyFiles: true,
+  //   absolute: true, //当前文件的任意目录
+  // });
   const sourceFiles: SourceFile[] = [];
   console.log(filePaths, "---");
-  await Promise.all(
-    filePaths.map(async (file) => {
+  await Promise.all([
+    ...filePaths.map(async (file) => {
       if (file.endsWith(".vue")) {
         const content = await fs.readFile(file, "utf8");
         const sfc = VueCompiler.parse(content);
@@ -59,7 +83,7 @@ export const generateTypesDefinitions = async () => {
           }
           const lang = scriptSetup?.lang || script?.lang || "js";
           const sourceFile = project.createSourceFile(
-            `${file}.${lang}`,
+            `${path.relative(process.cwd(), file)}.${lang}`,
             content
           );
           sourceFiles.push(sourceFile);
@@ -68,8 +92,16 @@ export const generateTypesDefinitions = async () => {
         const sourceFile = project.addSourceFileAtPath(file); // 把所有的ts文件都放在一起 发射成.d.ts文件
         sourceFiles.push(sourceFile);
       }
-    })
-  );
+    }),
+    ...epPaths.map(async (file) => {
+      const content = await fs.readFile(path.resolve(epRoot, file), "utf-8");
+      // D:\练习\练习代码库\picasso-plus\packages\index.ts
+      sourceFiles.push(
+        project.createSourceFile(path.resolve(pkgRoot, file), content)
+      );
+    }),
+  ]);
+
   //生成声明文件
   await project.emit({
     // 默认是放到内存中的
@@ -132,4 +164,7 @@ export const copyTypesDefinitions: TaskFunction = (done) => {
 //   }
 //   return parallel(copy('es'),copy('lib'))
 // }
-export const typesDefinition = series(generateTypesDefinitions,copyTypesDefinitions)
+export const typesDefinition = series(
+  generateTypesDefinitions,
+  copyTypesDefinitions
+);

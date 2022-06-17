@@ -245,7 +245,20 @@ for (const outputFile of emitOutput.getOutputFiles()) {
 
 ```
 
+```
+filePaths
 
+[
+  'D:/练习/练习代码库/picasso-plus/packages/components/index.ts',
+  'D:/练习/练习代码库/picasso-plus/packages/components/icon/index.ts',
+  'D:/练习/练习代码库/picasso-plus/packages/components/icon/src/icon.ts',
+  'D:/练习/练习代码库/picasso-plus/packages/components/icon/src/icon.vue'
+] ---
+
+
+epPaths
+ D:\练习\练习代码库\picasso-plus\packages\index.ts
+```
 
 
 

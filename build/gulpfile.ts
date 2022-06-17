@@ -11,7 +11,7 @@ import { withTaskName, run } from "./src/utils";
 //       run("pnpm run --filter ./packages/** --parallel build")
 //    ),
 export default series(
-  withTaskName("clean", () => run("pnpm run clean")),
+  // withTaskName("clean", () => run("pnpm run clean")),
   parallel(
     //单独打包每个组件
     withTaskName("buildComponent", () => run("pnpm run build buildComponent")),
