@@ -146,14 +146,14 @@ export const generateTypesDefinitions = async () => {
 };
 
 //拷贝声明文件到dist对应的模块
-export const copyTypesDefinitions: TaskFunction = (done) => {
-  const src = path.resolve(buildOutput, "types");
-  const copyTypes = (module: Module) =>
-    withTaskName(`copyTypes:${module}`, () =>
-      copy(src, buildConfig[module].output.path)
-    );
-  return parallel(copyTypes("esm"), copyTypes("cjs"))(done);
-};
+// export const copyTypesDefinitions: TaskFunction = (done) => {
+//   const src = path.resolve(buildOutput, "types");
+//   const copyTypes = (module: Module) =>
+//     withTaskName(`copyTypes:${module}`, () =>
+//       copy(src, buildConfig[module].output.path)
+//     );
+//   return parallel(copyTypes("esm"), copyTypes("cjs"))(done);
+// };
 
 // // -r  循环拷贝
 // function copyTypes(){
@@ -165,6 +165,7 @@ export const copyTypesDefinitions: TaskFunction = (done) => {
 //   return parallel(copy('es'),copy('lib'))
 // }
 export const typesDefinition = series(
-  generateTypesDefinitions,
-  copyTypesDefinitions
+  generateTypesDefinitions
+  // copyTypesDefinitions
 );
+// export const typesDefinition = generateTypesDefinitions;

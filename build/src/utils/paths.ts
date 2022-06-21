@@ -7,6 +7,7 @@ export const epRoot = resolve(pkgRoot, "picasso-plus");
 export const themeRoot = resolve(pkgRoot, "theme-chalk");
 export const utilRoot = resolve(pkgRoot, "utils");
 export const buildOutput = resolve(projectRoot, "dist");
+export const epOutput = resolve(buildOutput, "picasso-plus"); //dist/picasso-plus
 export const buildRoot = resolve(projectRoot, "build");
 
 // export const hookRoot = resolve(pkgRoot, 'hooks')

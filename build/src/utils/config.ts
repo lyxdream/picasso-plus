@@ -1,15 +1,16 @@
 import path from "path";
-import { buildOutput } from "./paths";
+import { epOutput } from "./paths";
+export const PKG_NAME = "picasso-plus";
 export const buildConfig = {
   esm: {
     module: "ESNext", //tsconfig 输出的结果
     format: "esm", //需要配置格式化后的模块规范
-    output: { 
+    output: {
       name: "es",
-      path: path.resolve(buildOutput, "es"), //打包到那个目录
+      path: path.resolve(epOutput, "es"), //打包到那个目录
     },
     bundle: {
-      path: "p-plus/es",
+      path: `${PKG_NAME}/es`,
     },
   },
   cjs: {
@@ -17,10 +18,10 @@ export const buildConfig = {
     format: "cjs",
     output: {
       name: "lib",
-      path: path.resolve(buildOutput, "lib"),
+      path: path.resolve(epOutput, "lib"),
     },
     bundle: {
-      path: "p-plus/lib",
+      path: `${PKG_NAME}/lib`,
     },
   },
 };

@@ -300,3 +300,12 @@ options <Object>
 ```
 
 - moduleResolution 的两种配置，node 会先到 node_modules 目录去查找，classic 会优先到外层去查找，找不到才会去 node_modules 目录去查找
+
+
+
+
+
+
+ 
+
+  pnpm add  @types/gulp-autoprefixer  --filter @picasso-plus/theme-chalk

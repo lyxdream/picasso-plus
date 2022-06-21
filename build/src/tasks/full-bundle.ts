@@ -4,7 +4,7 @@ import vue from "rollup-plugin-vue";
 import typescript from "rollup-plugin-typescript2";
 import path from "path";
 import { rollup, OutputOptions } from "rollup";
-import { buildOutput, epRoot } from "../utils/paths";
+import { epOutput, epRoot } from "../utils/paths";
 import { parallel } from "gulp";
 import { buildConfig, pathRewriter, writeBundles } from "../utils";
 import fs from "fs/promises";
@@ -21,7 +21,7 @@ const buildFull = async () => {
   const buildConfig = [
     {
       format: "umd", // 打包的格式
-      file: path.resolve(buildOutput, "index.js"),
+      file: path.resolve(epOutput, "index.js"),
       name: "PPlus", // 全局的名字
       exports: "named", // 导出的名字 用命名的方式导出  liraryTarget:"var" name:""
       globals: {
@@ -31,7 +31,7 @@ const buildFull = async () => {
     },
     {
       format: "esm",
-      file: path.resolve(buildOutput, "index.esm.js"),
+      file: path.resolve(epOutput, "index.esm.js"),
     },
   ];
   await writeBundles(bundle, buildConfig as OutputOptions[]);

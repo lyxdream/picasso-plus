@@ -17,17 +17,19 @@
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@types/gulp": "^4.0.9",
-    "chalk": "^4.1.2",
-    "consola": "^2.15.3",
-    "fast-glob": "^3.2.11",
-    "fs-extra": "^10.1.0",
     "gulp": "^4.0.2",
-    "gulp-typescript": "6.0.0-alpha.1",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "rollup-plugin-vue": "^6.0.0",
+    "@vue/compiler-sfc": "^3.2.20",
+    "consola": "^2.15.3",
+    "chalk": "^4.1.2",
+    "fs-extra": "^10.1.0",
     "rimraf": "^3.0.2",
+    "fast-glob": "^3.2.11",
     "rollup": "^2.73.0",
     "rollup-plugin-typescript2": "^0.31.2",
-    "rollup-plugin-vue": "^6.0.0",
     "sucrase": "^3.21.0",
+    "sass": "^1.51.0",
     "ts-morph": "^14.0.0",
     "typescript": "^4.6.4",
     "vue": "^3.2.25"
@@ -35,7 +37,6 @@
   "dependencies": {
     "@picasso-plus/components": "workspace:^1.0.0",
     "@picasso-plus/theme-chalk": "workspace:^1.0.0",
-    "@picasso-plus/utils": "workspace:^1.0.0",
-    "sass": "^1.51.0"
+    "@picasso-plus/utils": "workspace:^1.0.0"
   }
 }
