@@ -217,6 +217,7 @@ rollup-plugin-vue   //.vue文件
 ```
 
 对打包之后的路径做处理
+
 ```
 import { withInstall } from '@picasso-plus/utils/install';
 
@@ -233,7 +234,6 @@ pnpm i ts-morph -w -D
 
 ts-morph 文档地址：https://ts-morph.com/
 
-
 ```js
 const emitOutput = sourceFile.getEmitOutput();
 emitOutput.getEmitSkipped(); // returns: boolean
@@ -242,7 +242,6 @@ for (const outputFile of emitOutput.getOutputFiles()) {
   outputFile.getWriteByteOrderMark();
   outputFile.getText();
 }
-
 ```
 
 ```
@@ -259,10 +258,6 @@ filePaths
 epPaths
  D:\练习\练习代码库\picasso-plus\packages\index.ts
 ```
-
-
-
-
 
 扩展：
 
@@ -301,11 +296,6 @@ options <Object>
 
 - moduleResolution 的两种配置，node 会先到 node_modules 目录去查找，classic 会优先到外层去查找，找不到才会去 node_modules 目录去查找
 
+  pnpm add @types/gulp-autoprefixer --filter @picasso-plus/theme-chalk
 
-
-
-
-
- 
-
-  pnpm add  @types/gulp-autoprefixer  --filter @picasso-plus/theme-chalk
+  

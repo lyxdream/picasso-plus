@@ -22,6 +22,9 @@ import { copy } from "fs-extra";
 //       run("pnpm run --filter ./packages/** --parallel build")
 //    ),
 
+export const modules = ["esm", "cjs"] as const;
+export type Module = typeof modules[number];
+
 //拷贝picasso-plus/json
 export const copyFiles = () =>
   copyFile(
@@ -29,8 +32,6 @@ export const copyFiles = () =>
     path.join(epOutput, "package.json")
   );
 
-export const modules = ["esm", "cjs"] as const;
-export type Module = typeof modules[number];
 export const copyTypesDefinitions: TaskFunction = (done) => {
   const src = path.resolve(buildOutput, "types");
   const copyTypes = (module: Module) =>
@@ -45,15 +46,15 @@ export default series(
   // withTaskName("createOutput", () => mkdir(buildOutput, { recursive: true })),
   parallel(
     //单独打包每个组件
-    // withTaskName("buildComponent", () => run("pnpm run build buildComponent")),
-    // // // 执行build命令时会调用rollup, 我们给rollup传递参数buildFullComponent 那么就会执行导出任务叫 buildFullComponent
-    // withTaskName("buildFullComponent", () =>
-    //   run("pnpm run build buildFullComponent")
-    // ),
+    withTaskName("buildComponent", () => run("pnpm run build buildComponent")),
+    // // 执行build命令时会调用rollup, 我们给rollup传递参数buildFullComponent 那么就会执行导出任务叫 buildFullComponent
+    withTaskName("buildFullComponent", () =>
+      run("pnpm run build buildFullComponent")
+    ),
     // // 生成.d.ts文件
-    // withTaskName("typesDefinition", () =>
-    //   run("pnpm run build typesDefinition")
-    // ),
+    withTaskName("typesDefinition", () =>
+      run("pnpm run build typesDefinition")
+    ),
     // 打包css文件 和工具文件
     // series(
     //   withTaskName("buildThemeChalk", () =>
@@ -66,10 +67,10 @@ export default series(
     //   run("pnpm run --filter ./packages/** --parallel build")
     // )
     withTaskName("buildPackages", () =>
-      run("pnpm run --filter ./packages --parallel build")
+      run("pnpm run --filter ./packages/** --parallel build")
     )
-  )
-  // parallel(copyTypesDefinitions, copyFiles)
+  ),
+  parallel(copyTypesDefinitions, copyFiles)
 );
 
 export * from "./src/tasks/index";
